@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Abdullah Al Hassan — Digital Marketer & Freelancer</title>
+<meta name="description" content="Abdullah Al Hassan — Digital Marketer & Freelancer building brands, campaigns & digital experiences that generate real results. Meta Ads, Social, SEO, OMS Development.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config={theme:{extend:{fontFamily:{syne:['Syne','sans-serif'],inter:['Inter','sans-serif']},colors:{ink:'#08080a',soft:'#101012'}}}}
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.20/dist/lenis.min.js"></script>
+<script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js"}}</script>
+<style>
+*{ -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+html{ overflow-x:hidden; }
+body{ font-family:'Inter',system-ui; background:#08080a; color:#f5f5f7; overflow-x:hidden; }
+.font-syne{ font-family:'Syne',sans-serif; }
+::selection{ background:#fff; color:#000; }
+::-webkit-scrollbar{ width:6px; height:6px; } ::-webkit-scrollbar-thumb{ background:rgba(255,255,255,.15); border-radius:999px; }
+.glass{ background:rgba(255,255,255,.04); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border:1px solid rgba(255,255,255,.08); }
+.glass-strong{ background:rgba(16,16,18,.7); backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px); border:1px solid rgba(255,255,255,.08); }
+.text-muted{ color:rgba(255,255,255,.55); }
+.text-faint{ color:rgba(255,255,255,.32); }
+.reveal{ opacity:0; transform:translateY(28px); transition:opacity .9s cubic-bezier(.16,1,.3,1),transform .9s cubic-bezier(.16,1,.3,1); }
+.reveal.is-visible{ opacity:1; transform:translateY(0); }
+.reveal-delay-1{ transition-delay:.1s; } .reveal-delay-2{ transition-delay:.2s; } .reveal-delay-3{ transition-delay:.3s; }
+.tilt-card{ transform-style:preserve-3d; transition:transform .25s ease, border-color .3s ease, background .3s ease; will-change:transform; }
+.tilt-card:hover{ border-color:rgba(255,255,255,.16); }
+.magnetic-btn{ transition:transform .25s cubic-bezier(.23,1,.32,1), background .3s, border-color .3s; will-change:transform; }
+.no-scrollbar::-webkit-scrollbar{ display:none; } .no-scrollbar{ -ms-overflow-style:none; scrollbar-width:none; }
+#hero-canvas{ opacity:.9; }
+.cursor-dot,.cursor-ring{ top:0; left:0; will-change:transform; }
+@media (pointer:coarse){ .cursor-dot,.cursor-ring{ display:none !important; } }
+.loader-bar{ width:140px; height:1px; background:rgba(255,255,255,.1); overflow:hidden; position:relative; }
+.loader-progress{ position:absolute; left:0; top:0; height:100%; width:0%; background:#fff; transition:width .2s; }
+.grid-line{ background:linear-gradient(to bottom, transparent, rgba(255,255,255,.06), transparent); width:1px; }
+.shimmer{ position:relative; overflow:hidden; }
+.shimmer:after{ content:''; position:absolute; inset:0; background:linear-gradient(100deg, transparent 20%, rgba(255,255,255,.08) 50%, transparent 80%); transform:translateX(-100%); animation:shimmer 2.6s infinite; }
+@keyframes shimmer{ 100%{ transform:translateX(100%); } }
+.oms-grid{ background-image:linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px); background-size:32px 32px; }
+@media (prefers-reduced-motion:reduce){ *,*::before,*::after{ animation-duration:.01ms !important; transition-duration:.01ms !important; } #hero-canvas{ display:none; } .reveal{ opacity:1; transform:none; } }
+</style>
+</head>
+<body class="bg-ink text-white selection:bg-white selection:text-black">
+<div id="loader" class="fixed inset-0 z-[9999] bg-[#08080a] flex flex-col items-center justify-center">
+<div class="flex flex-col items-center gap-8">
+<div class="w-14 h-14 rounded-full border border-white/15 flex items-center justify-center font-syne font-800 text-[18px] tracking-tight">AAH</div>
+<div class="text-center">
+<p class="font-syne text-[12px] tracking-[0.35em] uppercase text-white/40">Loading Experience</p>
+<div class="mt-4 loader-bar mx-auto"><div id="loader-progress" class="loader-progress"></div></div>
+</div>
+</div>
+<div class="absolute bottom-10 left-10 right-10 flex justify-between text-[10px] tracking-widest uppercase text-white/20">
+<span>©2026 — Portfolio</span><span>Abdullah Al Hassan</span>
+</div>
+</div>
+<div id="scroll-progress" class="fixed top-0 left-0 h-[2px] bg-white z-[9998] w-0 origin-left"></div>
+<div id="cursor-dot" class="cursor-dot fixed w-[5px] h-[5px] bg-white rounded-full pointer-events-none z-[10000] mix-blend-difference hidden md:block -translate-x-1/2 -translate-y-1/2"></div>
+<div id="cursor-ring" class="cursor-ring fixed w-9 h-9 border border-white/20 rounded-full pointer-events-none z-[10000] mix-blend-difference hidden md:block -translate-x-1/2 -translate-y-1/2"></div>
+
+<header id="navbar" class="fixed top-0 w-full z-40 border-b border-transparent transition-all duration-500">
+<div class="max-w-[1440px] mx-auto px-6 md:px-10 h-[76px] flex items-center justify-between">
+<a href="#home" class="group flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-white text-black flex items-center justify-center font-syne font-bold text-[13px]">A</div>
+<span class="font-syne font-bold tracking-[-0.02em] text-[15px]">ABDULLAH<span class="opacity-30 group-hover:opacity-100 transition">.</span></span>
+</a>
+<nav class="hidden lg:flex items-center gap-1 p-1 rounded-full glass">
+<a href="#home" class="nav-link px-4 py-1.5 rounded-full text-[11px] tracking-[0.14em] uppercase text-white/60 hover:text-white transition">Home</a>
+<a href="#about" class="nav-link px-4 py-1.5 rounded-full text-[11px] tracking-[0.14em] uppercase text-white/60 hover:text-white transition">About</a>
+<a href="#services" class="nav-link px-4 py-1.5 rounded-full text-[11px] tracking-[0.14em] uppercase text-white/60 hover:text-white transition">Services</a>
+<a href="#experience" class="nav-link px-4 py-1.5 rounded-full text-[11px] tracking-[0.14em] uppercase text-white/60 hover:text-white transition">Experience</a>
+<a href="#projects" class="nav-link px-4 py-1.5 rounded-full text-[11px] tracking-[0.14em] uppercase text-white/60 hover:text-white transition">Projects</a>
+<a href="#skills" class="nav-link px-4 py-1.5 rounded-full text-[11px] tracking-[0.14em] uppercase text-white/60 hover:text-white transition">Skills</a>
+<a href="#contact" class="nav-link px-4 py-1.5 rounded-full text-[11px] tracking-[0.14em] uppercase text-white/60 hover:text-white transition">Contact</a>
+</nav>
+<div class="flex items-center gap-3">
+<a href="mailto:abdullahalhassan1800@gmail.com" class="hidden md:inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white text-black text-[13px] font-medium hover:bg-white/90 transition magnetic-btn" data-magnetic>
+<span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span> Email Me
+</a>
+<button id="menu-toggle" aria-label="Menu" class="lg:hidden w-10 h-10 rounded-full glass flex items-center justify-center">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+</button>
+</div>
+</div>
+<div id="mobile-menu" class="lg:hidden hidden absolute top-full left-0 w-full glass-strong border-b border-white/10">
+<div class="px-6 py-8 flex flex-col gap-6">
+<a href="#about" class="font-syne text-[22px] leading-none tracking-tight">About</a>
+<a href="#services" class="font-syne text-[22px] leading-none tracking-tight">Services</a>
+<a href="#experience" class="font-syne text-[22px] leading-none tracking-tight">Experience</a>
+<a href="#projects" class="font-syne text-[22px] leading-none tracking-tight">Projects</a>
+<a href="#skills" class="font-syne text-[22px] leading-none tracking-tight">Skills</a>
+<a href="#contact" class="font-syne text-[22px] leading-none tracking-tight">Contact</a>
+<a href="mailto:abdullahalhassan1800@gmail.com" class="mt-4 inline-flex justify-center px-6 py-4 rounded-full bg-white text-black font-medium">Let's Work Together</a>
+</div>
+</div>
+</header>
+
+<main>
+<section id="home" class="relative min-h-[100svh] flex items-center overflow-hidden bg-[#08080a]">
+<canvas id="hero-canvas" class="absolute inset-0 w-full h-full"></canvas>
+<div class="absolute inset-0 pointer-events-none">
+<div class="absolute inset-0 bg-gradient-to-b from-[#08080a]/10 via-[#08080a]/30 to-[#08080a]"></div>
+<div class="absolute top-0 left-1/2 -translate-x-1/2 w-[120vw] h-[70vh] bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.07),transparent_60%)] blur-[30px]"></div>
+<div class="absolute left-0 top-[20%] bottom-0 w-px grid-line hidden md:block"></div>
+<div class="absolute right-0 top-[20%] bottom-0 w-px grid-line hidden md:block"></div>
+</div>
+<div class="relative z-10 max-w-[1440px] mx-auto px-6 md:px-10 w-full pt-28 pb-12">
+<div class="flex flex-col xl:flex-row xl:items-end justify-between gap-12">
+<div class="max-w-[820px]">
+<div class="reveal inline-flex items-center gap-3 pl-1 pr-4 py-1 rounded-full glass text-[10px] md:text-[11px] tracking-[0.18em] uppercase">
+<span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white text-black font-semibold tracking-widest">Available</span>
+<span class="text-white/60">For new projects • Q2 2026</span>
+</div>
+<h1 class="reveal reveal-delay-1 mt-8 font-syne font-[800] leading-[0.84] tracking-[-0.05em] text-[14vw] md:text-[92px] lg:text-[112px]">
+ABDULLAH<br>
+<span class="text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-white/20">AL HASSAN</span>
+</h1>
+<div class="reveal reveal-delay-2 mt-8 flex flex-col md:flex-row md:items-center gap-6">
+<div class="flex items-center gap-4">
+<div class="h-px w-12 bg-white/20"></div>
+<p class="text-[13px] tracking-[0.24em] uppercase text-white/50 font-medium">Digital Marketer & Freelancer</p>
+</div>
+<p class="max-w-[440px] text-[17px] md:text-[19px] leading-[1.45] text-white/70 font-light">Building brands, campaigns & digital experiences that generate real results — performance-driven, creative-led, system-built.</p>
+</div>
+<div class="reveal reveal-delay-3 mt-10 flex flex-wrap gap-3">
+<a href="#projects" class="group inline-flex items-center gap-3 px-7 h-[48px] rounded-full bg-white text-black text-[14px] font-medium magnetic-btn" data-magnetic>
+View My Work
+<span class="w-7 h-7 rounded-full bg-black text-white flex items-center justify-center group-hover:rotate-45 transition-transform duration-300">→</span>
+</a>
+<a href="#contact" class="inline-flex items-center gap-2 px-7 h-[48px] rounded-full glass text-white text-[14px] font-medium hover:bg-white/[0.08] transition magnetic-btn" data-magnetic>
+Let's Work Together
+<span class="opacity-40">↗</span>
+</a>
+</div>
+<div class="reveal reveal-delay-3 mt-14 grid grid-cols-3 max-w-[520px] border-t border-white/10 pt-6 gap-6">
+<div><p class="text-[11px] tracking-widest uppercase text-white/30 mb-2">Focus</p><p class="text-[13px] leading-snug">Meta Ads • Lead Gen • Creative</p></div>
+<div><p class="text-[11px] tracking-widest uppercase text-white/30 mb-2">Stack</p><p class="text-[13px] leading-snug">SEO • Web Dev • OMS Tools</p></div>
+<div><p class="text-[11px] tracking-widest uppercase text-white/30 mb-2">Edge</p><p class="text-[13px] leading-snug">AI Workflows • Prompt Eng.</p></div>
+</div>
+</div>
+<div class="xl:w-[360px] relative hidden xl:block">
+<div class="absolute -top-10 -right-6 w-[420px] h-[420px] rounded-full bg-gradient-to-b from-white/[0.06] to-transparent blur-[1px] pointer-events-none"></div>
+<div class="relative space-y-4">
+<div class="tilt-card glass rounded-[20px] p-5 translate-z-10" data-speed="0.04">
+<div class="flex items-center justify-between mb-4"><span class="text-[10px] tracking-widest uppercase text-white/40">Live Campaign</span><span class="flex items-center gap-1.5 text-[10px] px-2 py-1 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/20"><span class="w-1 h-1 bg-emerald-400 rounded-full animate-pulse"></span> Active</span></div>
+<div class="flex gap-3">
+<div class="w-10 h-10 rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-500"></div>
+<div><p class="text-[13px] font-medium leading-none">Motor Gliz — Inbound</p><p class="text-[11px] text-white/40 mt-1">Meta Ads • Lead Form • Call</p></div>
+</div>
+<div class="mt-4 grid grid-cols-3 gap-2">
+<div class="rounded-xl bg-white/[0.04] border border-white/[0.06] p-2.5"><p class="text-[10px] text-white/30 uppercase">Leads</p><p class="font-syne font-bold text-[16px]">1.2k+</p></div>
+<div class="rounded-xl bg-white/[0.04] border border-white/[0.06] p-2.5"><p class="text-[10px] text-white/30 uppercase">CTR</p><p class="font-syne font-bold text-[16px]">3.8%</p></div>
+<div class="rounded-xl bg-white/[0.04] border border-white/[0.06] p-2.5"><p class="text-[10px] text-white/30 uppercase">Status</p><p class="font-syne font-bold text-[16px] text-emerald-300">↑</p></div>
+</div>
+</div>
+<div class="tilt-card glass rounded-[20px] p-5 ml-10" data-speed="0.02">
+<p class="text-[10px] tracking-widest uppercase text-white/30 mb-3">OMS • Order Flow</p>
+<div class="space-y-2.5">
+<div class="h-2 rounded-full bg-white/10 overflow-hidden"><div class="h-full w-[78%] bg-white"></div></div>
+<div class="flex justify-between text-[11px] text-white/40"><span>Processing</span><span>78%</span></div>
+<div class="flex gap-2 pt-1">
+<span class="px-2 py-1 rounded-full bg-white text-black text-[10px] font-medium">Automation</span>
+<span class="px-2 py-1 rounded-full border border-white/10 text-[10px]">Business Tool</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-16 md:mt-20 flex items-center justify-between border-t border-white/[0.06] pt-6">
+<div class="flex items-center gap-4 text-[10px] tracking-[0.2em] uppercase text-white/30"><span class="hidden md:inline">Scroll to explore</span><span class="md:hidden">Explore</span><div class="w-14 h-px bg-gradient-to-r from-white/30 to-transparent"></div></div>
+<div class="flex items-center gap-2 text-[10px] tracking-widest uppercase text-white/20"><span>India</span><span class="w-px h-3 bg-white/10"></span><span>Remote Worldwide</span></div>
+</div>
+</div>
+</section>
+
+<section id="about" class="relative border-t border-white/[0.06] bg-[#0a0a0c]">
+<div class="max-w-[1440px] mx-auto px-6 md:px-10 py-20 md:py-28">
+<div class="grid lg:grid-cols-[300px_1fr] gap-12 md:gap-20">
+<div class="lg:sticky lg:top-28 h-fit">
+<p class="text-[11px] tracking-[0.28em] uppercase text-white/30 mb-6">— About</p>
+<h2 class="font-syne text-[42px] md:text-[56px] leading-[0.9] tracking-[-0.03em]">Marketer.<br>Builder.<br>Operator.</h2>
+<div class="mt-8 p-[1px] rounded-[18px] bg-gradient-to-b from-white/15 to-transparent">
+<div class="rounded-[17px] bg-[#101012] p-5">
+<p class="text-[13px] leading-relaxed text-white/60">Not a generic freelancer. I operate like a growth partner — from ad creative to funnel to backend automation.</p>
+<div class="mt-4 flex gap-2">
+<span class="px-2.5 py-1 rounded-full bg-white text-black text-[11px] font-medium">Performance First</span>
+<span class="px-2.5 py-1 rounded-full border border-white/10 text-[11px]">Systems Thinking</span>
+</div>
+</div>
+</div>
+</div>
+<div>
+<div class="reveal max-w-[720px]">
+<p class="text-[20px] md:text-[28px] leading-[1.25] tracking-[-0.02em] font-light">I'm Abdullah Al Hassan, a Digital Marketer & Freelancer specializing in Meta Ads, Social Media, Creative Design, Lead Generation, Website Development, SEO and AI-powered workflows.</p>
+<p class="mt-6 text-[15px] leading-[1.7] text-white/60">I help brands turn attention into revenue — crafting campaigns, content, and tools that actually move the needle. From end-to-end marketing for D2C brands to building an in-house OMS that streamlined order operations, I bridge creative, media buying, and product.</p>
+</div>
+<div class="mt-14 grid md:grid-cols-3 gap-4">
+<div class="reveal glass rounded-[18px] p-6"><p class="text-[11px] tracking-widest uppercase text-white/30">Approach</p><p class="mt-3 font-syne text-[18px] leading-tight">Data-informed, creative-led, relentlessly tested.</p></div>
+<div class="reveal reveal-delay-1 glass rounded-[18px] p-6"><p class="text-[11px] tracking-widest uppercase text-white/30">What I ship</p><p class="mt-3 font-syne text-[18px] leading-tight">Campaigns that convert, sites that sell, systems that scale.</p></div>
+<div class="reveal reveal-delay-2 glass rounded-[18px] p-6"><p class="text-[11px] tracking-widest uppercase text-white/30">How I work</p><p class="mt-3 font-syne text-[18px] leading-tight">Fast sprints, clear reporting, no fluff — just outcomes.</p></div>
+</div>
+<div class="mt-10 flex flex-wrap gap-2">
+<span class="px-3 py-1.5 rounded-full border border-white/10 text-[12px] text-white/60">Meta Ads</span>
+<span class="px-3 py-1.5 rounded-full border border-white/10 text-[12px] text-white/60">Social Media Management</span>
+<span class="px-3 py-1.5 rounded-full border border-white/10 text-[12px] text-white/60">Creative Design</span>
+<span class="px-3 py-1.5 rounded-full border border-white/10 text-[12px] text-white/60">Lead Generation</span>
+<span class="px-3 py-1.5 rounded-full border border-white/10 text-[12px] text-white/60">Website Development</span>
+<span class="px-3 py-1.5 rounded-full border border-white/10 text-[12px] text-white/60">SEO</span>
+<span class="px-3 py-1.5 rounded-full border border-white/10 text-[12px] text-white/60">AI Tools & Prompt Engineering</span>
+<span class="px-3 py-1.5 rounded-full border border-white/10 text-[12px] text-white/60">OMS Development</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<section id="services" class="relative bg-[#08080a] border-t border-white/[0.06]">
+<div class="max-w-[1440px] mx-auto px-6 md:px-10 py-20 md:py-28">
+<div class="flex flex-wrap items-end justify-between gap-6 mb-12">
+<div>
+<p class="text-[11px] tracking-[0.28em] uppercase text-white/30">— Services</p>
+<h2 class="mt-4 font-syne text-[36px] md:text-[54px] leading-[0.9] tracking-[-0.03em] max-w-[600px]">Growth services designed for real business impact.</h2>
+</div>
+<p class="max-w-[360px] text-[14px] leading-relaxed text-white/50">Premium execution across paid, organic, creative and product — no templates, no vanity metrics.</p>
+</div>
+<div class="grid md:grid-cols-2 lg:grid-cols-4 gap-[1px] bg-white/[0.06] rounded-[24px] overflow-hidden p-[1px]">
+<div class="tilt-card group bg-[#0f0f11] rounded-[22px] md:rounded-none md:first:rounded-tl-[22px] p-7 md:p-8 flex flex-col min-h-[320px]">
+<div class="flex items-start justify-between"><span class="text-[11px] tracking-widest text-white/20">01</span><div class="w-9 h-9 rounded-full border border-white/10 flex items-center justify-center group-hover:bg-white group-hover:text-black transition">↗</div></div>
+<h3 class="mt-8 font-syne text-[22px] leading-tight">Meta Ads Management</h3>
+<p class="mt-3 text-[13px] leading-relaxed text-white/50">Full-funnel campaign architecture, creative testing, audience strategy and daily optimization for ROAS & qualified leads.</p>
+<div class="mt-auto pt-6 flex flex-wrap gap-1.5"><span class="px-2 py-1 rounded-full bg-white/[0.06] text-[10px] tracking-wide">Campaign Setup</span><span class="px-2 py-1 rounded-full bg-white/[0.06] text-[10px]">Optimization</span><span class="px-2 py-1 rounded-full bg-white/[0.06] text-[10px]">Scaling</span></div>
+</div>
+<div class="tilt-card group bg-[#0f0f11] p-7 md:p-8 flex flex-col min-h-[320px]">
+<div class="flex items-start justify-between"><span class="text-[11px] tracking-widest text-white/20">02</span><div class="w-9 h-9 rounded-full border border-white/10 flex items-center justify-center group-hover:bg-white group-hover:text-black transition">↗</div></div>
+<h3 class="mt-8 font-syne text-[22px] leading-tight">Social Media Management</h3>
+<p class="mt-3 text-[13px] leading-relaxed text-white/50">Content planning, calendar ops, community and brand voice — built to drive saves, shares and inbound.</p>
+<div class="mt-auto pt-6 flex flex-wrap gap-1.5"><span class="px-2 py-1 rounded-full bg-white/[0.06] text-[10px]">Content System</span><span class="px-2 py-1 rounded-full bg-white/[0.06] text-[10px]">IG & FB</span></div>
+</div>
+<div class="tilt-card group bg-[#0f0f11] p-7 md:p-8 flex flex-col min-h-[320px]">
+<div class="flex items-start justify-between"><span class="text-[11px] tracking-widest text-white/20">03</span><div class="w-9 h-9 rounded-full border border-white/10 flex items-center justify-center group-hover:bg-white group-hover:text-black transition">↗</div></div>
+<h3 class="mt-8 font-syne text-[22px] leading-tight">Lead Generation</h3>
+<p class="mt-3 text-[13px] leading-relaxed text-white/50">Inbound call campaigns, lead forms and qualification flows engineered for quality, not just volume.</p>
+<div class="mt-auto pt-6 flex flex-wrap gap-1.5"><span class="px-2 py-1 rounded-full bg-white/[0.06] text-[10px]">Inbound Calls</span><span class="px-2 py-1 rounded-full bg-white/[0.06] text-[10px]">Qualified Leads</span></div>
+</div>
+<div class="tilt-card group bg-[#0f0f11] md:rounded-tr-[22px] p-7 md:p-8 flex flex-col min-h-[320px]">
+<div class="flex items-start justify-between"><span class="text-[11px] tracking-widest text-white/20">04</span><div class="w-9 h-9 rounded-full border border-white/10 flex items-center justify-center group-hover:bg-white group-hover:text-black transition">↗</div></div>
+<h3 class="mt-8 font-syne text-[22px] leading-tight">Creative Design</h3>
+<p class="mt-3 text-[13px] leading-relaxed text-white/50">Ad creatives, promotional assets and brand visuals that stop scroll and drive action.</p>
+<div class="mt-auto pt-6 flex flex-wrap gap-1.5"><span class="px-2 py-1 rounded-full bg-white/[0.06] text-[10px]">Ad Creatives</span><span class="px-2 py-1 rounded-full bg-white/[0.06] text-[10px]">Brand</span></div>
+</div>
+<div class="tilt-card group bg-[#0f0f11] md:rounded-bl-[22px] p-7 md:p-8 flex flex-col min-h-[320px]">
+<div class="flex items-start justify-between"><span class="text-[11px] tracking-widest text-white/20">05</span><div class="w-9 h-9 rounded-full border border-white/10 flex items-center justify-center group-hover:bg-white group-hover:text-black transition">↗</div></div>
+<h3 class="mt-8 font-syne text-[22px] leading-tight">Website Development</h3>
+<p class="mt-3 text-[13px] leading-relaxed text-white/50">Responsive, lead-focused websites with modern UX, fast performance and conversion architecture.</p>
+<div class="mt-auto pt-6 flex flex-wrap gap-1.5"><span class="px-2 py-1 rounded-full bg-white/[0.06] text-[10px]">Responsive</span><span class="px-2 py-1 rounded-full bg-white/[0.06] text-[10px]">Lead-Focused</span></div>
+</div>
+<div class="tilt-card group bg-[#0f0f11] p-7 md:p-8 flex flex-col min-h-[320px]">
+<div class="flex items-start justify-between"><span class="text-[11px] tracking-widest text-white/20">06</span><div class="w-9 h-9 rounded-full border border-white/10 flex items-center justify-center group-hover:bg-white group-hover:text-black transition">↗</div></div>
+<h3 class="mt-8 font-syne text-[22px] leading-tight">SEO</h3>
+<p class="mt-3 text-[13px] leading-relaxed text-white/50">Technical, on-page and content SEO to build sustainable organic growth and search visibility.</p>
+<div class="mt-auto pt-6 flex flex-wrap gap-1.5"><span class="px-2 py-1 rounded-full bg-white/[0.06] text-[10px]">Technical SEO</span><span class="px-2 py-1 rounded-full bg-white/[0.06] text-[10px]">Content</span></div>
+</div>
+<div class="tilt-card group bg-[#0f0f11] p-7 md:p-8 flex flex-col min-h-[320px]">
+<div class="flex items-start justify-between"><span class="text-[11px] tracking-widest text-white/20">07</span><div class="w-9 h-9 rounded-full border border-white/10 flex items-center justify-center group-hover:bg-white group-hover:text-black transition">↗</div></div>
+<h3 class="mt-8 font-syne text-[22px] leading-tight">AI & Prompt Engineering</h3>
+<p class="mt-3 text-[13px] leading-relaxed text-white/50">AI-assisted content, creative ideation and workflow automation that cuts production time 10x.</p>
+<div class="mt-auto pt-6 flex flex-wrap gap-1.5"><span class="px-2 py-1 rounded-full bg-white/[0.06] text-[10px]">Workflows</span><span class="px-2 py-1 rounded-full bg-white/[0.06] text-[10px]">Automation</span></div>
+</div>
+<div class="tilt-card group bg-[#0f0f11] md:rounded-br-[22px] p-7 md:p-8 flex flex-col min-h-[320px]">
+<div class="flex items-start justify-between"><span class="text-[11px] tracking-widest text-white/20">08</span><div class="w-9 h-9 rounded-full border border-white/10 flex items-center justify-center group-hover:bg-white group-hover:text-black transition">↗</div></div>
+<h3 class="mt-8 font-syne text-[22px] leading-tight">Business Tool / OMS Dev</h3>
+<p class="mt-3 text-[13px] leading-relaxed text-white/50">Custom internal tools — order management, tracking and ops dashboards built for real business logic.</p>
+<div class="mt-auto pt-6 flex flex-wrap gap-1.5"><span class="px-2 py-1 rounded-full bg-white/[0.06] text-[10px]">OMS</span><span class="px-2 py-1 rounded-full bg-white/[0.06] text-[10px]">Automation</span></div>
+</div>
+</div>
+</div>
+</section>
+
+<section id="experience" class="relative bg-[#0c0c0e] border-t border-white/[0.06]">
+<div class="max-w-[1440px] mx-auto px-6 md:px-10 py-20 md:py-28">
+<div class="grid lg:grid-cols-[320px_1fr] gap-12">
+<div class="lg:sticky lg:top-28 h-fit">
+<p class="text-[11px] tracking-[0.28em] uppercase text-white/30">— Experience</p>
+<h2 class="mt-4 font-syne text-[40px] leading-[0.9] tracking-[-0.03em]">Where strategy<br>met execution.</h2>
+<div class="mt-8 hidden lg:block w-px h-40 bg-gradient-to-b from-white/20 to-transparent ml-2"></div>
+</div>
+<div class="space-y-[1px] bg-white/[0.06] rounded-[24px] overflow-hidden p-[1px]">
+<div class="reveal bg-[#111113] rounded-t-[23px] p-8 md:p-10">
+<div class="flex flex-wrap items-start justify-between gap-4">
+<div>
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white text-black text-[11px] font-semibold tracking-wide">CURRENT • APR 2026 — PRESENT</div>
+<h3 class="mt-5 font-syne text-[26px] md:text-[30px] leading-tight">Taiva Naturals Pvt. Ltd.</h3>
+<p class="mt-2 text-[13px] tracking-[0.14em] uppercase text-white/40">Digital Marketer — End-to-End Growth</p>
+</div>
+<div class="w-10 h-10 rounded-full glass flex items-center justify-center text-[12px]">↗</div>
+</div>
+<div class="mt-8 grid md:grid-cols-2 gap-8">
+<div class="space-y-3">
+<p class="text-[11px] tracking-widest uppercase text-white/30">Responsibilities</p>
+<ul class="space-y-2.5 text-[14px] leading-relaxed text-white/60">
+<li class="flex gap-2"><span class="text-white/20">—</span> End-to-end digital marketing & social media management</li>
+<li class="flex gap-2"><span class="text-white/20">—</span> Creative design & Meta Ads campaign creation, management, optimization</li>
+<li class="flex gap-2"><span class="text-white/20">—</span> Lead generation & inbound call campaigns</li>
+<li class="flex gap-2"><span class="text-white/20">—</span> AI tools, prompt engineering & workflow automation</li>
+<li class="flex gap-2"><span class="text-white/20">—</span> Developed in-house OMS tool to streamline order management</li>
+</ul>
+</div>
+<div class="glass rounded-[16px] p-5">
+<p class="text-[11px] tracking-widest uppercase text-white/30 mb-4">Impact Snapshot</p>
+<div class="space-y-3">
+<div class="flex justify-between items-center text-[13px]"><span class="text-white/50">Channels</span><span class="font-medium">Meta • Social • Web • SEO</span></div>
+<div class="h-px bg-white/10"></div>
+<div class="flex justify-between items-center text-[13px]"><span class="text-white/50">Core Outcome</span><span class="font-medium">Leads + Ops Efficiency</span></div>
+<div class="h-px bg-white/10"></div>
+<div class="flex justify-between items-center text-[13px]"><span class="text-white/50">Built</span><span class="px-2 py-1 rounded-full bg-white text-black text-[11px] font-medium">OMS Tool</span></div>
+</div>
+</div>
+</div>
+</div>
+<div class="reveal bg-[#111113] rounded-b-[23px] p-8 md:p-10">
+<div class="flex flex-wrap items-start justify-between gap-4">
+<div>
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/15 text-[11px] tracking-wide text-white/60">INTERNSHIP • FEB 2026 — APR 2026 • 3 MONTHS</div>
+<h3 class="mt-5 font-syne text-[26px] md:text-[30px] leading-tight">D-Fame India by Nxtleet Marketing Pvt. Ltd.</h3>
+<p class="mt-2 text-[13px] tracking-[0.14em] uppercase text-white/40">Digital Marketing Intern — Meta Ads & Content</p>
+</div>
+</div>
+<div class="mt-8 grid md:grid-cols-2 gap-8">
+<ul class="space-y-2.5 text-[14px] leading-relaxed text-white/60">
+<li class="flex gap-2"><span class="text-white/20">—</span> Meta Ads campaign setup & audience targeting</li>
+<li class="flex gap-2"><span class="text-white/20">—</span> Campaign monitoring & optimization</li>
+<li class="flex gap-2"><span class="text-white/20">—</span> Ad copy & marketing content creation</li>
+<li class="flex gap-2"><span class="text-white/20">—</span> AI-assisted content & creative ideation</li>
+</ul>
+<div class="flex flex-wrap gap-2 content-start">
+<span class="px-3 py-1.5 rounded-full bg-white/[0.06] border border-white/10 text-[12px]">Meta Ads Setup</span>
+<span class="px-3 py-1.5 rounded-full bg-white/[0.06] border border-white/10 text-[12px]">Audience Targeting</span>
+<span class="px-3 py-1.5 rounded-full bg-white/[0.06] border border-white/10 text-[12px]">Optimization</span>
+<span class="px-3 py-1.5 rounded-full bg-white/[0.06] border border-white/10 text-[12px]">AI Ideation</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<section id="projects" class="relative bg-[#08080a] border-t border-white/[0.06] overflow-hidden">
+<div class="max-w-[1440px] mx-auto px-6 md:px-10 pt-20 md:pt-28 pb-8">
+<div class="flex flex-wrap items-end justify-between gap-6">
+<div>
+<p class="text-[11px] tracking-[0.28em] uppercase text-white/30">— Selected Work</p>
+<h2 class="mt-4 font-syne text-[40px] md:text-[56px] leading-[0.9] tracking-[-0.03em]">Campaigns, brands<br>& digital products.</h2>
+</div>
+<div class="flex items-center gap-3 text-[11px] tracking-widest uppercase text-white/30">
+<span class="hidden md:inline">Drag / Scroll horizontally</span>
+<div class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center">↔</div>
+</div>
+</div>
+</div>
+<div id="projects-viewport" class="relative w-full overflow-hidden">
+<div id="projects-track" class="projects-track flex gap-4 md:gap-6 px-6 md:px-10 pb-12 will-change-transform cursor-grab active:cursor-grabbing select-none no-scrollbar overflow-x-auto">
+<article class="tilt-card group min-w-[88vw] md:min-w-[520px] lg:min-w-[560px] bg-[#101012] border border-white/[0.06] rounded-[24px] overflow-hidden">
+<div class="h-[280px] md:h-[360px] relative overflow-hidden bg-gradient-to-br from-[#1a1a1e] to-[#0f0f12]">
+<div class="absolute inset-0 opacity-60" style="background:radial-gradient(600px at 30% 20%, rgba(168,85,247,.25), transparent), radial-gradient(500px at 80% 80%, rgba(236,72,153,.20), transparent)"></div>
+<div class="absolute top-6 left-6 flex gap-2">
+<span class="px-3 py-1 rounded-full bg-white text-black text-[11px] font-medium">D2C • Wellness</span>
+<span class="px-3 py-1 rounded-full glass text-[11px]">Meta Ads</span>
+</div>
+<div class="absolute bottom-0 left-0 right-0 p-6">
+<div class="glass-strong rounded-[16px] p-4 flex items-center justify-between">
+<div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-500"></div><div><p class="text-[13px] font-medium">Motor Gliz Campaign</p><p class="text-[11px] text-white/40">Lead Form + Inbound Calls</p></div></div>
+<div class="w-8 h-8 rounded-full bg-white text-black flex items-center justify-center">↗</div>
+</div>
+</div>
+</div>
+<div class="p-7">
+<h3 class="font-syne text-[26px] leading-none">MOTOR GLIZ</h3>
+<p class="mt-3 text-[13px] leading-relaxed text-white/50">Social media management, Meta Ads creative design, campaign creation, optimization and inbound call generation for high-intent wellness audience.</p>
+<div class="mt-5 flex flex-wrap gap-1.5">
+<span class="px-2.5 py-1 rounded-full border border-white/10 text-[11px] text-white/60">Social Media</span>
+<span class="px-2.5 py-1 rounded-full border border-white/10 text-[11px] text-white/60">Meta Ads Creative</span>
+<span class="px-2.5 py-1 rounded-full border border-white/10 text-[11px] text-white/60">Optimization</span>
+<span class="px-2.5 py-1 rounded-full border border-white/10 text-[11px] text-white/60">Inbound Calls</span>
+</div>
+</div>
+</article>
+<article class="tilt-card group min-w-[88vw] md:min-w-[520px] lg:min-w-[560px] bg-[#101012] border border-white/[0.06] rounded-[24px] overflow-hidden">
+<div class="h-[280px] md:h-[360px] relative overflow-hidden bg-gradient-to-br from-[#151a14] to-[#0e1210]">
+<div class="absolute inset-0 opacity-60" style="background:radial-gradient(600px at 20% 30%, rgba(34,197,94,.22), transparent), radial-gradient(500px at 90% 70%, rgba(132,204,2,.18), transparent)"></div>
+<div class="absolute top-6 left-6 flex gap-2">
+<span class="px-3 py-1 rounded-full bg-white text-black text-[11px] font-medium">Herbal • Lead Gen</span>
+<span class="px-3 py-1 rounded-full glass text-[11px]">Qualified Leads</span>
+</div>
+<div class="absolute bottom-0 left-0 right-0 p-6">
+<div class="glass-strong rounded-[16px] p-4">
+<div class="flex items-center justify-between"><p class="text-[13px] font-medium">Herbal Cure Funnel</p><span class="text-[11px] px-2 py-1 rounded-full bg-emerald-500/20 text-emerald-300">+ Quality Score</span></div>
+<div class="mt-3 h-1.5 rounded-full bg-white/10 overflow-hidden"><div class="h-full w-[84%] bg-emerald-400"></div></div>
+</div>
+</div>
+</div>
+<div class="p-7">
+<h3 class="font-syne text-[26px] leading-none">HERBAL CURE</h3>
+<p class="mt-3 text-[13px] leading-relaxed text-white/50">Meta Ads, creative development, campaign setup & optimization driving inbound calls and qualified lead generation.</p>
+<div class="mt-5 flex flex-wrap gap-1.5">
+<span class="px-2.5 py-1 rounded-full border border-white/10 text-[11px] text-white/60">Meta Ads</span>
+<span class="px-2.5 py-1 rounded-full border border-white/10 text-[11px] text-white/60">Creative Dev</span>
+<span class="px-2.5 py-1 rounded-full border border-white/10 text-[11px] text-white/60">Qualified Leads</span>
+</div>
+</div>
+</article>
+<article class="tilt-card group min-w-[88vw] md:min-w-[520px] lg:min-w-[560px] bg-[#101012] border border-white/[0.06] rounded-[24px] overflow-hidden">
+<div class="h-[280px] md:h-[360px] relative overflow-hidden bg-gradient-to-br from-[#1a1610] to-[#12100c]">
+<div class="absolute inset-0 opacity-60" style="background:radial-gradient(600px at 30% 20%, rgba(249,115,22,.22), transparent), radial-gradient(500px at 80% 80%, rgba(234,179,8,.18), transparent)"></div>
+<div class="absolute top-6 left-6 flex gap-2">
+<span class="px-3 py-1 rounded-full bg-white text-black text-[11px] font-medium">Full Stack Growth</span>
+<span class="px-3 py-1 rounded-full glass text-[11px]">Website + SEO</span>
+</div>
+<div class="absolute bottom-0 left-0 right-0 p-6">
+<div class="glass-strong rounded-[16px] p-4 grid grid-cols-3 gap-3 text-center">
+<div><p class="text-[10px] uppercase text-white/30">Social</p><p class="mt-1 text-[13px] font-medium">Active</p></div>
+<div><p class="text-[10px] uppercase text-white/30">SEO</p><p class="mt-1 text-[13px] font-medium">Optimized</p></div>
+<div><p class="text-[10px] uppercase text-white/30">Leads</p><p class="mt-1 text-[13px] font-medium">Inbound</p></div>
+</div>
+</div>
+</div>
+<div class="p-7">
+<h3 class="font-syne text-[26px] leading-none">AGNIYANTRA</h3>
+<p class="mt-3 text-[13px] leading-relaxed text-white/50">Social management, creative design, Meta Ads, website/web projects, SEO, lead gen and end-to-end digital marketing.</p>
+<div class="mt-5 flex flex-wrap gap-1.5">
+<span class="px-2.5 py-1 rounded-full border border-white/10 text-[11px] text-white/60">Social</span>
+<span class="px-2.5 py-1 rounded-full border border-white/10 text-[11px] text-white/60">SEO</span>
+<span class="px-2.5 py-1 rounded-full border border-white/10 text-[11px] text-white/60">Website</span>
+<span class="px-2.5 py-1 rounded-full border border-white/10 text-[11px] text-white/60">Meta Ads</span>
+</div>
+</div>
+</article>
+<article class="tilt-card group min-w-[88vw] md:min-w-[520px] lg:min-w-[560px] bg-[#101012] border border-white/[0.06] rounded-[24px] overflow-hidden">
+<div class="h-[280px] md:h-[360px] relative overflow-hidden bg-gradient-to-br from-[#141a22] to-[#0e141c]">
+<div class="absolute inset-0 opacity-60" style="background:radial-gradient(600px at 30% 20%, rgba(59,130,246,.22), transparent), radial-gradient(500px at 80% 80%, rgba(6,182,212,.18), transparent)"></div>
+<div class="absolute top-6 left-6 flex gap-2">
+<span class="px-3 py-1 rounded-full bg-white text-black text-[11px] font-medium">Real Estate • Web Dev</span>
+<span class="px-3 py-1 rounded-full glass text-[11px]">Lead Focused</span>
+</div>
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="w-[72%] glass-strong rounded-[18px] p-4 shadow-2xl">
+<div class="flex items-center gap-2 mb-3"><div class="w-2.5 h-2.5 rounded-full bg-white/20"></div><div class="w-2.5 h-2.5 rounded-full bg-white/20"></div><div class="w-2.5 h-2.5 rounded-full bg-white/20"></div></div>
+<div class="grid grid-cols-2 gap-3">
+<div class="h-20 rounded-xl bg-white/[0.06]"></div>
+<div class="space-y-2"><div class="h-3 rounded-full bg-white/20 w-3/4"></div><div class="h-3 rounded-full bg-white/10 w-1/2"></div><div class="h-8 rounded-full bg-white text-black flex items-center justify-center text-[11px] font-medium mt-3">Enquire Now</div></div>
+</div>
+</div>
+</div>
+</div>
+<div class="p-7">
+<h3 class="font-syne text-[22px] md:text-[26px] leading-none">DIGITAL QLICK — REAL ESTATE CLIENT</h3>
+<p class="mt-3 text-[13px] leading-relaxed text-white/50">Developed responsive real estate website with property presentation, online enquiry, responsive UI and lead-focused structure.</p>
+<div class="mt-5 flex flex-wrap gap-1.5">
+<span class="px-2.5 py-1 rounded-full border border-white/10 text-[11px] text-white/60">Website Dev</span>
+<span class="px-2.5 py-1 rounded-full border border-white/10 text-[11px] text-white/60">Responsive UI</span>
+<span class="px-2.5 py-1 rounded-full border border-white/10 text-[11px] text-white/60">Enquiry Flow</span>
+</div>
+</div>
+</article>
+<article class="tilt-card group min-w-[88vw] md:min-w-[520px] lg:min-w-[560px] bg-[#101012] border border-white/[0.06] rounded-[24px] overflow-hidden">
+<div class="h-[280px] md:h-[360px] relative overflow-hidden bg-gradient-to-br from-[#1e161b] to-[#15101a]">
+<div class="absolute inset-0 opacity-60" style="background:radial-gradient(600px at 30% 20%, rgba(236,72,153,.22), transparent), radial-gradient(500px at 80% 80%, rgba(168,85,247,.18), transparent)"></div>
+<div class="absolute top-6 left-6 flex gap-2">
+<span class="px-3 py-1 rounded-full bg-white text-black text-[11px] font-medium">Beauty • Salon</span>
+<span class="px-3 py-1 rounded-full glass text-[11px]">Instagram</span>
+</div>
+<div class="absolute bottom-0 left-0 right-0 p-6">
+<div class="flex gap-2">
+<div class="w-16 h-16 rounded-2xl bg-white/10 border border-white/10"></div>
+<div class="w-16 h-16 rounded-2xl bg-white text-black flex items-center justify-center font-syne text-[10px]">STUDIO S</div>
+<div class="w-16 h-16 rounded-2xl bg-white/10 border border-white/10"></div>
+</div>
+</div>
+</div>
+<div class="p-7">
+<h3 class="font-syne text-[26px] leading-none">STUDIO S ART SALON</h3>
+<p class="mt-3 text-[13px] leading-relaxed text-white/50">Social media management for Instagram & Facebook, promotional creatives, content planning and website development.</p>
+<div class="mt-5 flex flex-wrap gap-1.5">
+<span class="px-2.5 py-1 rounded-full border border-white/10 text-[11px] text-white/60">Social Media</span>
+<span class="px-2.5 py-1 rounded-full border border-white/10 text-[11px] text-white/60">Content Planning</span>
+<span class="px-2.5 py-1 rounded-full border border-white/10 text-[11px] text-white/60">Website</span>
+</div>
+</div>
+</article>
+<article class="tilt-card group min-w-[88vw] md:min-w-[520px] lg:min-w-[560px] bg-[#101012] border border-white/[0.06] rounded-[24px] overflow-hidden">
+<div class="h-[280px] md:h-[360px] relative overflow-hidden bg-[#0f0f10]">
+<div class="absolute inset-0 oms-grid opacity-30"></div>
+<div class="absolute inset-0 bg-gradient-to-b from-transparent to-[#101012]"></div>
+<div class="absolute top-6 left-6 flex gap-2">
+<span class="px-3 py-1 rounded-full bg-white text-black text-[11px] font-medium">Portfolio • 3D Experience</span>
+<span class="px-3 py-1 rounded-full glass text-[11px]">GSAP + Three.js</span>
+</div>
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="font-syne text-[18vw] md:text-[120px] leading-none font-[800] tracking-[-0.06em] text-white/[0.04]">PORTFOLIO</div>
+</div>
+</div>
+<div class="p-7">
+<h3 class="font-syne text-[26px] leading-none">PERSONAL PORTFOLIO WEBSITE</h3>
+<p class="mt-3 text-[13px] leading-relaxed text-white/50">Modern responsive portfolio with interactive UI/UX, 3D scrolling effects, scroll-based animations and premium web experience.</p>
+<div class="mt-5 flex flex-wrap gap-1.5">
+<span class="px-2.5 py-1 rounded-full border border-white/10 text-[11px] text-white/60">Interactive UI</span>
+<span class="px-2.5 py-1 rounded-full border border-white/10 text-[11px] text-white/60">3D Scroll</span>
+<span class="px-2.5 py-1 rounded-full border border-white/10 text-[11px] text-white/60">Modern UX</span>
+</div>
+</div>
+</article>
+</div>
+</div>
+</section>
+
+<section id="oms" class="relative bg-[#0a0a0c] border-t border-white/[0.06] overflow-hidden">
+<div class="max-w-[1440px] mx-auto px-6 md:px-10 py-20 md:py-28">
+<div class="grid lg:grid-cols-[1.1fr_0.9fr] gap-12 items-center">
+<div>
+<p class="text-[11px] tracking-[0.28em] uppercase text-white/30">— Business Tools & Automation</p>
+<h2 class="mt-4 font-syne text-[36px] md:text-[52px] leading-[0.9] tracking-[-0.04em]">Built an OMS that<br>actually runs the business.</h2>
+<p class="mt-6 max-w-[520px] text-[15px] leading-[1.7] text-white/60">Developed an in-house Order Management System to streamline business and order-management workflows — from lead capture to dispatch, tracking and reporting. No SaaS bloat, just exactly what ops needed.</p>
+<div class="mt-8 grid grid-cols-3 gap-3 max-w-[460px]">
+<div class="glass rounded-[14px] p-4"><p class="text-[11px] uppercase tracking-widest text-white/30">Module</p><p class="mt-2 text-[13px] font-medium leading-tight">Order Capture & Tracking</p></div>
+<div class="glass rounded-[14px] p-4"><p class="text-[11px] uppercase tracking-widest text-white/30">Automation</p><p class="mt-2 text-[13px] font-medium leading-tight">Status • Alerts • Reports</p></div>
+<div class="glass rounded-[14px] p-4"><p class="text-[11px] uppercase tracking-widest text-white/30">Outcome</p><p class="mt-2 text-[13px] font-medium leading-tight">Faster ops, less chaos</p></div>
+</div>
+<div class="mt-8 flex gap-3">
+<span class="px-3 py-1.5 rounded-full bg-white text-black text-[12px] font-medium">OMS Development</span>
+<span class="px-3 py-1.5 rounded-full border border-white/10 text-[12px] text-white/60">Business Tool</span>
+<span class="px-3 py-1.5 rounded-full border border-white/10 text-[12px] text-white/60">Workflow Automation</span>
+</div>
+</div>
+<div class="relative">
+<div class="absolute -inset-10 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.06),transparent_60%)] blur-[20px] pointer-events-none"></div>
+<div class="relative glass-strong rounded-[24px] overflow-hidden shadow-[0_30px_80px_rgba(0,0,0,0.6)]">
+<div class="h-[48px] border-b border-white/[0.06] flex items-center justify-between px-5">
+<div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-white/15"></div><div class="w-3 h-3 rounded-full bg-white/15"></div><div class="w-3 h-3 rounded-full bg-white/15"></div></div>
+<div class="flex items-center gap-2 text-[11px] text-white/30"><span>taiva-oms.local</span><span class="w-px h-3 bg-white/10"></span><span class="px-2 py-1 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/20 text-[10px]">● Live</span></div>
+</div>
+<div class="grid grid-cols-[200px_1fr] min-h-[380px]">
+<div class="border-r border-white/[0.06] p-4 space-y-4 bg-white/[0.01]">
+<div class="space-y-2">
+<div class="h-8 rounded-lg bg-white text-black flex items-center px-3 text-[12px] font-medium">Orders</div>
+<div class="h-8 rounded-lg hover:bg-white/[0.04] flex items-center px-3 text-[12px] text-white/50">Customers</div>
+<div class="h-8 rounded-lg hover:bg-white/[0.04] flex items-center px-3 text-[12px] text-white/50">Inventory</div>
+<div class="h-8 rounded-lg hover:bg-white/[0.04] flex items-center px-3 text-[12px] text-white/50">Reports</div>
+</div>
+<div class="pt-4 border-t border-white/[0.06] space-y-2">
+<p class="text-[10px] tracking-widest uppercase text-white/20 px-3">Metrics</p>
+<div class="rounded-xl bg-white/[0.04] border border-white/[0.06] p-3">
+<p class="text-[10px] text-white/30 uppercase">Today</p>
+<p class="font-syne text-[20px] leading-none mt-1">148</p>
+<p class="text-[11px] text-emerald-300 mt-1">↑ 12% vs yesterday</p>
+</div>
+</div>
+</div>
+<div class="p-5">
+<div class="grid grid-cols-3 gap-3">
+<div class="rounded-xl bg-white/[0.04] border border-white/[0.06] p-3"><p class="text-[10px] uppercase text-white/30">Pending</p><p class="font-syne text-[18px] mt-1">24</p></div>
+<div class="rounded-xl bg-white/[0.04] border border-white/[0.06] p-3"><p class="text-[10px] uppercase text-white/30">Shipped</p><p class="font-syne text-[18px] mt-1">96</p></div>
+<div class="rounded-xl bg-white text-black p-3"><p class="text-[10px] uppercase opacity-60">Delivered</p><p class="font-syne text-[18px] mt-1 font-bold">312</p></div>
+</div>
+<div class="mt-5 rounded-xl border border-white/[0.06] overflow-hidden">
+<div class="grid grid-cols-[1.2fr_0.8fr_0.6fr_0.6fr] text-[10px] tracking-widest uppercase text-white/30 px-4 py-2.5 border-b border-white/[0.06] bg-white/[0.02]">
+<span>Order ID</span><span>Customer</span><span>Status</span><span>Amount</span>
+</div>
+<div class="divide-y divide-white/[0.04] text-[12px]">
+<div class="grid grid-cols-[1.2fr_0.8fr_0.6fr_0.6fr] px-4 py-3 items-center"><span class="font-mono text-white/70">#TV-4829</span><span class="text-white/60">A. Khan</span><span><span class="px-2 py-1 rounded-full bg-amber-500/15 text-amber-300 text-[10px]">Processing</span></span><span class="font-medium">₹2,480</span></div>
+<div class="grid grid-cols-[1.2fr_0.8fr_0.6fr_0.6fr] px-4 py-3 items-center"><span class="font-mono text-white/70">#TV-4828</span><span class="text-white/60">S. Patel</span><span><span class="px-2 py-1 rounded-full bg-emerald-500/15 text-emerald-300 text-[10px]">Shipped</span></span><span class="font-medium">₹1,950</span></div>
+<div class="grid grid-cols-[1.2fr_0.8fr_0.6fr_0.6fr] px-4 py-3 items-center"><span class="font-mono text-white/70">#TV-4827</span><span class="text-white/60">R. Singh</span><span><span class="px-2 py-1 rounded-full bg-white text-black text-[10px]">Delivered</span></span><span class="font-medium">₹3,120</span></div>
+<div class="grid grid-cols-[1.2fr_0.8fr_0.6fr_0.6fr] px-4 py-3 items-center opacity-60"><span class="font-mono text-white/70">#TV-4826</span><span class="text-white/60">M. Ali</span><span><span class="px-2 py-1 rounded-full border border-white/10 text-[10px]">New</span></span><span class="font-medium">₹2,100</span></div>
+</div>
+</div>
+<div class="mt-4 h-[56px] rounded-xl bg-white/[0.03] border border-white/[0.06] flex items-end gap-[3px] p-3">
+<div class="flex-1 bg-white/20 rounded-full" style="height:30%"></div>
+<div class="flex-1 bg-white/30 rounded-full" style="height:55%"></div>
+<div class="flex-1 bg-white/40 rounded-full" style="height:40%"></div>
+<div class="flex-1 bg-white rounded-full" style="height:85%"></div>
+<div class="flex-1 bg-white/50 rounded-full" style="height:60%"></div>
+<div class="flex-1 bg-white/30 rounded-full" style="height:45%"></div>
+<div class="flex-1 bg-white/20 rounded-full" style="height:35%"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<section id="skills" class="relative bg-[#08080a] border-t border-white/[0.06]">
+<div class="max-w-[1440px] mx-auto px-6 md:px-10 py-20 md:py-28">
+<div class="flex flex-wrap items-end justify-between gap-6 mb-10">
+<div>
+<p class="text-[11px] tracking-[0.28em] uppercase text-white/30">— Skills & Stack</p>
+<h2 class="mt-4 font-syne text-[36px] md:text-[52px] leading-[0.9] tracking-[-0.04em]">A full-stack growth toolkit.</h2>
+</div>
+<p class="max-w-[380px] text-[14px] leading-relaxed text-white/50">No fake percentages. Just real capabilities I use to ship, scale and systematize.</p>
+</div>
+<div class="grid lg:grid-cols-[1.2fr_0.8fr] gap-[1px] bg-white/[0.06] rounded-[24px] p-[1px] overflow-hidden">
+<div class="bg-[#0f0f11] rounded-t-[23px] lg:rounded-l-[23px] lg:rounded-tr-none p-8 md:p-10">
+<div class="flex flex-wrap gap-2.5" id="skills-cloud">
+<button class="skill-pill group px-4 py-2.5 rounded-full border border-white/10 bg-white/[0.03] text-[13px] hover:bg-white hover:text-black transition flex items-center gap-2">Meta Ads <span class="w-5 h-5 rounded-full bg-white/10 group-hover:bg-black/10 flex items-center justify-center text-[10px]">↗</span></button>
+<button class="skill-pill group px-4 py-2.5 rounded-full border border-white/10 bg-white/[0.03] text-[13px] hover:bg-white hover:text-black transition flex items-center gap-2">Digital Marketing <span class="w-5 h-5 rounded-full bg-white/10 group-hover:bg-black/10 flex items-center justify-center text-[10px]">↗</span></button>
+<button class="skill-pill group px-4 py-2.5 rounded-full border border-white/10 bg-white/[0.03] text-[13px] hover:bg-white hover:text-black transition flex items-center gap-2">Social Media <span class="w-5 h-5 rounded-full bg-white/10 group-hover:bg-black/10 flex items-center justify-center text-[10px]">↗</span></button>
+<button class="skill-pill group px-4 py-2.5 rounded-full border border-white/10 bg-white/[0.03] text-[13px] hover:bg-white hover:text-black transition flex items-center gap-2">Lead Generation <span class="w-5 h-5 rounded-full bg-white/10 group-hover:bg-black/10 flex items-center justify-center text-[10px]">↗</span></button>
+<button class="skill-pill group px-4 py-2.5 rounded-full border border-white/10 bg-white/[0.03] text-[13px] hover:bg-white hover:text-black transition flex items-center gap-2">Creative Design <span class="w-5 h-5 rounded-full bg-white/10 group-hover:bg-black/10 flex items-center justify-center text-[10px]">↗</span></button>
+<button class="skill-pill group px-4 py-2.5 rounded-full border border-white/10 bg-white/[0.03] text-[13px] hover:bg-white hover:text-black transition flex items-center gap-2">Website Development <span class="w-5 h-5 rounded-full bg-white/10 group-hover:bg-black/10 flex items-center justify-center text-[10px]">↗</span></button>
+<button class="skill-pill group px-4 py-2.5 rounded-full border border-white/10 bg-white/[0.03] text-[13px] hover:bg-white hover:text-black transition flex items-center gap-2">SEO <span class="w-5 h-5 rounded-full bg-white/10 group-hover:bg-black/10 flex items-center justify-center text-[10px]">↗</span></button>
+<button class="skill-pill group px-4 py-2.5 rounded-full border border-white/10 bg-white text-black text-[13px] flex items-center gap-2">AI Tools <span class="w-5 h-5 rounded-full bg-black/10 flex items-center justify-center text-[10px]">↗</span></button>
+<button class="skill-pill group px-4 py-2.5 rounded-full border border-white/10 bg-white/[0.03] text-[13px] hover:bg-white hover:text-black transition flex items-center gap-2">Prompt Engineering <span class="w-5 h-5 rounded-full bg-white/10 group-hover:bg-black/10 flex items-center justify-center text-[10px]">↗</span></button>
+<button class="skill-pill group px-4 py-2.5 rounded-full border border-white/10 bg-white/[0.03] text-[13px] hover:bg-white hover:text-black transition flex items-center gap-2">UI/UX <span class="w-5 h-5 rounded-full bg-white/10 group-hover:bg-black/10 flex items-center justify-center text-[10px]">↗</span></button>
+<button class="skill-pill group px-4 py-2.5 rounded-full border border-white/10 bg-white/[0.03] text-[13px] hover:bg-white hover:text-black transition flex items-center gap-2">OMS / Business Tools <span class="w-5 h-5 rounded-full bg-white/10 group-hover:bg-black/10 flex items-center justify-center text-[10px]">↗</span></button>
+</div>
+<div class="mt-10 grid md:grid-cols-3 gap-4">
+<div class="rounded-[16px] border border-white/[0.06] bg-white/[0.02] p-5"><p class="text-[11px] tracking-widest uppercase text-white/30">Meta Ads Depth</p><p class="mt-2 text-[13px] leading-relaxed text-white/60">Campaign architecture, creative testing matrix, CAPI, lookalikes, retargeting & scaling playbooks.</p></div>
+<div class="rounded-[16px] border border-white/[0.06] bg-white/[0.02] p-5"><p class="text-[11px] tracking-widest uppercase text-white/30">Web & SEO</p><p class="mt-2 text-[13px] leading-relaxed text-white/60">Fast, responsive, lead-focused sites with semantic SEO & conversion tracking.</p></div>
+<div class="rounded-[16px] border border-white/[0.06] bg-white/[0.02] p-5"><p class="text-[11px] tracking-widest uppercase text-white/30">AI Workflows</p><p class="mt-2 text-[13px] leading-relaxed text-white/60">Prompt systems, content pipelines, creative ideation & ops automation.</p></div>
+</div>
+</div>
+<div class="bg-[#0f0f11] rounded-b-[23px] lg:rounded-r-[23px] lg:rounded-bl-none p-8 md:p-10 flex flex-col justify-between">
+<div>
+<p class="text-[11px] tracking-widest uppercase text-white/30">How I operate</p>
+<div class="mt-6 space-y-5">
+<div class="flex gap-4"><div class="w-8 h-8 rounded-full bg-white text-black flex items-center justify-center text-[12px] font-bold">1</div><div><p class="text-[14px] font-medium">Performance Obsessed</p><p class="text-[12px] text-white/50 mt-1 leading-relaxed">Every creative, keyword and funnel step measured against business outcomes.</p></div></div>
+<div class="flex gap-4"><div class="w-8 h-8 rounded-full border border-white/15 flex items-center justify-center text-[12px]">2</div><div><p class="text-[14px] font-medium">System Builder</p><p class="text-[12px] text-white/50 mt-1 leading-relaxed">I don’t just run ads — I build the OMS, tracking and processes behind them.</p></div></div>
+<div class="flex gap-4"><div class="w-8 h-8 rounded-full border border-white/15 flex items-center justify-center text-[12px]">3</div><div><p class="text-[14px] font-medium">Creative + Data</p><p class="text-[12px] text-white/50 mt-1 leading-relaxed">Creative that converts because it’s informed by data, not guesswork.</p></div></div>
+</div>
+</div>
+<div class="mt-10 rounded-[16px] bg-white text-black p-5">
+<p class="text-[12px] tracking-widest uppercase opacity-60">Currently exploring</p>
+<p class="mt-2 font-syne text-[18px] leading-tight">AI Agents for ad ops, predictive lead scoring & auto-creative generation.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<section id="process" class="relative bg-[#0c0c0e] border-t border-white/[0.06]">
+<div class="max-w-[1440px] mx-auto px-6 md:px-10 py-20 md:py-28">
+<div class="flex flex-wrap items-end justify-between gap-6 mb-14">
+<div>
+<p class="text-[11px] tracking-[0.28em] uppercase text-white/30">— Work Process</p>
+<h2 class="mt-4 font-syne text-[36px] md:text-[52px] leading-[0.9] tracking-[-0.04em]">From idea to impact,<br>without the chaos.</h2>
+</div>
+<div class="hidden md:flex items-center gap-2 text-[11px] tracking-widest uppercase text-white/30"><span>4-step framework</span><div class="w-12 h-px bg-white/15"></div></div>
+</div>
+<div class="grid md:grid-cols-4 gap-[1px] bg-white/[0.06] rounded-[24px] p-[1px]">
+<div class="group bg-[#111113] rounded-t-[23px] md:rounded-l-[23px] md:rounded-tr-none p-8 relative overflow-hidden">
+<div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-white/[0.06] to-transparent rounded-full blur-[12px]"></div>
+<span class="text-[11px] tracking-widest text-white/20">01</span>
+<h3 class="mt-6 font-syne text-[24px] leading-none">Discover</h3>
+<p class="mt-3 text-[13px] leading-relaxed text-white/50">Deep dive into brand, audience, offer & data. We map what’s working, what’s broken, what’s next.</p>
+<div class="mt-8 flex gap-2"><span class="px-2 py-1 rounded-full bg-white/[0.06] text-[10px]">Audit</span><span class="px-2 py-1 rounded-full bg-white/[0.06] text-[10px]">Research</span></div>
+</div>
+<div class="group bg-[#111113] p-8 relative overflow-hidden">
+<span class="text-[11px] tracking-widest text-white/20">02</span>
+<h3 class="mt-6 font-syne text-[24px] leading-none">Strategize</h3>
+<p class="mt-3 text-[13px] leading-relaxed text-white/50">Campaign architecture, creative angles, funnel & measurement plan — clear KPIs, no vanity.</p>
+<div class="mt-8 flex gap-2"><span class="px-2 py-1 rounded-full bg-white/[0.06] text-[10px]">Funnel</span><span class="px-2 py-1 rounded-full bg-white/[0.06] text-[10px]">KPI Map</span></div>
+</div>
+<div class="group bg-[#111113] p-8 relative overflow-hidden">
+<span class="text-[11px] tracking-widest text-white/20">03</span>
+<h3 class="mt-6 font-syne text-[24px] leading-none">Build & Launch</h3>
+<p class="mt-3 text-[13px] leading-relaxed text-white/50">Creatives, copy, site, tracking and OMS hooks — shipped fast, tested rigorously.</p>
+<div class="mt-8 flex gap-2"><span class="px-2 py-1 rounded-full bg-white/[0.06] text-[10px]">Build</span><span class="px-2 py-1 rounded-full bg-white/[0.06] text-[10px]">Launch</span></div>
+</div>
+<div class="group bg-[#111113] rounded-b-[23px] md:rounded-r-[23px] md:rounded-bl-none p-8 relative overflow-hidden">
+<span class="text-[11px] tracking-widest text-white/20">04</span>
+<h3 class="mt-6 font-syne text-[24px] leading-none">Optimize</h3>
+<p class="mt-3 text-[13px] leading-relaxed text-white/50">Daily optimization, weekly sprints, reporting that actually helps you decide.</p>
+<div class="mt-8 flex gap-2"><span class="px-2 py-1 rounded-full bg-white text-black text-[10px] font-medium">Scale</span><span class="px-2 py-1 rounded-full bg-white/[0.06] text-[10px]">Iterate</span></div>
+</div>
+</div>
+</div>
+</section>
+
+<section id="contact" class="relative bg-[#08080a] border-t border-white/[0.06] overflow-hidden">
+<div class="absolute inset-0 pointer-events-none">
+<div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[120vw] h-[60vh] bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.06),transparent_60%)]"></div>
+</div>
+<div class="relative max-w-[1440px] mx-auto px-6 md:px-10 py-20 md:py-32">
+<div class="grid lg:grid-cols-[1.2fr_0.8fr] gap-12 items-end">
+<div>
+<p class="text-[11px] tracking-[0.28em] uppercase text-white/30">— Let's build</p>
+<h2 class="mt-6 font-syne text-[48px] md:text-[72px] lg:text-[84px] leading-[0.85] tracking-[-0.05em]">Have a project<br>in mind?<br><span class="text-white/30">Let's build<br>something<br>impactful.</span></h2>
+<div class="mt-10 flex flex-wrap gap-3">
+<a href="mailto:abdullahalhassan1800@gmail.com" class="group inline-flex items-center gap-3 px-7 h-[52px] rounded-full bg-white text-black text-[14px] font-medium magnetic-btn" data-magnetic>
+Email Me
+<span class="w-8 h-8 rounded-full bg-black text-white flex items-center justify-center group-hover:rotate-45 transition-transform">→</span>
+</a>
+<a href="mailto:abdullahalhassan1800@gmail.com?subject=Let's%20Work%20Together%20—%20Project%20Inquiry" class="inline-flex items-center gap-2 px-7 h-[52px] rounded-full glass text-white text-[14px] font-medium hover:bg-white/[0.08] transition magnetic-btn" data-magnetic>
+Let's Work Together ↗
+</a>
+</div>
+<div class="mt-12 flex flex-wrap gap-6 text-[13px]">
+<div><p class="text-[11px] tracking-widest uppercase text-white/30">Email</p><a href="mailto:abdullahalhassan1800@gmail.com" class="mt-1 inline-block hover:text-white/70 transition">abdullahalhassan1800@gmail.com</a></div>
+<div><p class="text-[11px] tracking-widest uppercase text-white/30">Location</p><p class="mt-1 text-white/60">India • Remote Worldwide</p></div>
+<div><p class="text-[11px] tracking-widest uppercase text-white/30">Response</p><p class="mt-1 text-white/60">Usually within 6 hours</p></div>
+</div>
+</div>
+<div class="lg:pb-2">
+<div class="glass-strong rounded-[24px] p-8 md:p-10">
+<p class="font-syne text-[22px] leading-tight">Quick brief — what I need to get started</p>
+<div class="mt-6 space-y-4 text-[13px] leading-relaxed text-white/60">
+<p>• What are you selling & to whom?</p>
+<p>• Current channels & monthly budget?</p>
+<p>• What does success look like in 90 days?</p>
+</div>
+<div class="mt-8 p-4 rounded-[14px] bg-white text-black">
+<p class="text-[12px] tracking-widest uppercase opacity-60">Preferred start</p>
+<p class="mt-1 font-medium text-[14px]">Discovery call (30 min) → Proposal & timeline → Sprint 1</p>
+</div>
+<div class="mt-6 flex items-center gap-2 text-[11px] tracking-widest uppercase text-white/30">
+<span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></span> Accepting 2 new clients for Q2 2026
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+
+<footer class="border-t border-white/[0.06] bg-[#08080a]">
+<div class="max-w-[1440px] mx-auto px-6 md:px-10 py-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-white text-black flex items-center justify-center font-syne font-bold">A</div>
+<div>
+<p class="font-syne font-bold tracking-tight leading-none">Abdullah Al Hassan</p>
+<p class="text-[12px] text-white/40 mt-1 tracking-wide">Digital Marketer & Freelancer</p>
+</div>
+</div>
+<div class="flex flex-wrap items-center gap-6 text-[12px] text-white/40">
+<a href="mailto:abdullahalhassan1800@gmail.com" class="hover:text-white transition">Email</a>
+<span class="w-px h-3 bg-white/10"></span>
+<a href="#" onclick="event.preventDefault(); alert('Add your LinkedIn URL here');" class="hover:text-white transition">LinkedIn — placeholder</a>
+<a href="#" onclick="event.preventDefault(); alert('Add your Instagram URL here');" class="hover:text-white transition">Instagram — placeholder</a>
+<a href="#" onclick="event.preventDefault(); alert('Add your portfolio/behance URL here');" class="hover:text-white transition">Behance — placeholder</a>
+</div>
+<div class="text-[11px] tracking-widest uppercase text-white/20">© 2026 Abdullah Al Hassan • Built with systems & taste</div>
+</div>
+</footer>
+
+<script>
+const lenis = new Lenis({ duration:1.2, easing:t=>Math.min(1,1.001-Math.pow(2,-10*t)), smoothWheel:true });
+function raf(time){ lenis.raf(time); requestAnimationFrame(raf); }
+requestAnimationFrame(raf);
+gsap.ticker.add((time)=>{ lenis.raf(time*1000); });
+lenis.on('scroll', ScrollTrigger.update);
+
+const progressBar = document.getElementById('scroll-progress');
+lenis.on('scroll', ({progress})=>{ progressBar.style.width = `${progress*100}%`; });
+
+const loader = document.getElementById('loader');
+const loaderProg = document.getElementById('loader-progress');
+let lp=0;
+const loaderInterval=setInterval(()=>{ lp+=Math.random()*18; if(lp>100) lp=100; loaderProg.style.width=lp+'%'; if(lp>=100){ clearInterval(loaderInterval); setTimeout(()=>{ loader.style.transition='opacity .6s ease, transform .6s ease'; loader.style.opacity='0'; loader.style.transform='translateY(-20px)'; setTimeout(()=>loader.remove(),700); },300); } },90);
+
+const navbar = document.getElementById('navbar');
+lenis.on('scroll', ({scroll})=>{
+  if(scroll>20){ navbar.classList.add('glass-strong','border-white/[0.06]'); navbar.classList.remove('border-transparent'); }
+  else{ navbar.classList.remove('glass-strong','border-white/[0.06]'); navbar.classList.add('border-transparent'); }
+});
+
+const menuToggle=document.getElementById('menu-toggle');
+const mobileMenu=document.getElementById('mobile-menu');
+menuToggle?.addEventListener('click',()=>{ mobileMenu.classList.toggle('hidden'); });
+mobileMenu?.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>mobileMenu.classList.add('hidden')));
+
+const dot=document.getElementById('cursor-dot');
+const ring=document.getElementById('cursor-ring');
+let mouseX=0, mouseY=0, ringX=0, ringY=0;
+if(window.matchMedia('(pointer:fine)').matches){
+  window.addEventListener('mousemove', e=>{ mouseX=e.clientX; mouseY=e.clientY; dot.style.transform=`translate3d(${mouseX}px,${mouseY}px,0) translate(-50%,-50%)`; });
+  (function animateRing(){ ringX += (mouseX - ringX)*0.12; ringY += (mouseY - ringY)*0.12; ring.style.transform=`translate3d(${ringX}px,${ringY}px,0) translate(-50%,-50%)`; requestAnimationFrame(animateRing); })();
+  document.querySelectorAll('a,button,.tilt-card').forEach(el=>{
+    el.addEventListener('mouseenter',()=>{ ring.style.transform+=' scale(1.6)'; ring.style.borderColor='rgba(255,255,255,.5)'; dot.style.transform+=' scale(1.8)'; });
+    el.addEventListener('mouseleave',()=>{ ring.style.borderColor='rgba(255,255,255,.2)'; dot.style.transform=`translate3d(${mouseX}px,${mouseY}px,0) translate(-50%,-50%)`; });
+  });
+}
+
+document.querySelectorAll('.tilt-card').forEach(card=>{
+  card.addEventListener('mousemove', e=>{
+    const r=card.getBoundingClientRect();
+    const x=e.clientX - r.left, y=e.clientY - r.top;
+    const cx=r.width/2, cy=r.height/2;
+    const rx=(y-cy)/14, ry=(cx-x)/14;
+    card.style.transform=`perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) translateZ(0)`;
+  });
+  card.addEventListener('mouseleave',()=>{ card.style.transform='perspective(900px) rotateX(0) rotateY(0)'; });
+});
+
+document.querySelectorAll('[data-magnetic]').forEach(btn=>{
+  btn.addEventListener('mousemove', e=>{
+    const r=btn.getBoundingClientRect();
+    const x=e.clientX - r.left - r.width/2;
+    const y=e.clientY - r.top - r.height/2;
+    btn.style.transform=`translate(${x*0.18}px, ${y*0.35}px)`;
+  });
+  btn.addEventListener('mouseleave',()=>{ btn.style.transform='translate(0,0)'; });
+});
+
+const track=document.getElementById('projects-track');
+let isDown=false, startX, scrollLeft;
+if(track){
+  track.addEventListener('mousedown', e=>{ isDown=true; track.classList.add('cursor-grabbing'); startX=e.pageX - track.offsetLeft; scrollLeft=track.scrollLeft; });
+  track.addEventListener('mouseleave',()=>{ isDown=false; track.classList.remove('cursor-grabbing'); });
+  track.addEventListener('mouseup',()=>{ isDown=false; track.classList.remove('cursor-grabbing'); });
+  track.addEventListener('mousemove', e=>{ if(!isDown) return; e.preventDefault(); const x=e.pageX - track.offsetLeft; const walk=(x-startX)*1.6; track.scrollLeft=scrollLeft-walk; });
+  track.addEventListener('touchstart', e=>{ startX=e.touches[0].pageX - track.offsetLeft; scrollLeft=track.scrollLeft; }, {passive:true});
+  track.addEventListener('touchmove', e=>{ const x=e.touches[0].pageX - track.offsetLeft; const walk=(x-startX)*1.6; track.scrollLeft=scrollLeft-walk; }, {passive:true});
+}
+
+const observer=new IntersectionObserver((entries)=>{ entries.forEach(en=>{ if(en.isIntersecting){ en.target.classList.add('is-visible'); observer.unobserve(en.target); } }); }, {threshold:0.18});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+
+gsap.registerPlugin(ScrollTrigger);
+gsap.utils.toArray('.reveal').forEach(el=>{
+  if(el.classList.contains('is-visible')) return;
+  gsap.fromTo(el, {y:28, opacity:0}, {y:0, opacity:1, duration:1, ease:'power3.out', scrollTrigger:{trigger:el, start:'top 88%', once:true}});
+});
+
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click', e=>{
+    const id=a.getAttribute('href'); if(id.length>1){ const t=document.querySelector(id); if(t){ e.preventDefault(); lenis.scrollTo(t, {offset:-72, duration:1.2}); } }
+  });
+});
+
+if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+  gsap.utils.toArray('[data-speed]').forEach(el=>{
+    const speed=parseFloat(el.dataset.speed)||0.05;
+    gsap.to(el, {y:()=> -100*speed*10, ease:'none', scrollTrigger:{trigger:el, start:'top bottom', end:'bottom top', scrub:0.8}});
+  });
+}
+</script>
+<script type="module">
+import * as THREE from 'three';
+const canvas=document.getElementById('hero-canvas');
+if(canvas && !window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+  const scene=new THREE.Scene();
+  const camera=new THREE.PerspectiveCamera(60, canvas.clientWidth/canvas.clientHeight, 0.1, 100);
+  camera.position.set(0,0,6);
+  const renderer=new THREE.WebGLRenderer({canvas, alpha:true, antialias:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
+  renderer.setClearColor(0x000000,0);
+  const ambient=new THREE.AmbientLight(0xffffff,0.6);
+  scene.add(ambient);
+  const dir=new THREE.DirectionalLight(0xffffff,0.8);
+  dir.position.set(2,3,4);
+  scene.add(dir);
+  const group=new THREE.Group();
+  scene.add(group);
+  const geo1=new THREE.IcosahedronGeometry(1.2,1);
+  const mat1=new THREE.MeshStandardMaterial({color:0xffffff, wireframe:true, transparent:true, opacity:0.12});
+  const mesh1=new THREE.Mesh(geo1, mat1);
+  mesh1.position.set(2.8,0.6,0);
+  group.add(mesh1);
+  const geo2=new THREE.TorusKnotGeometry(0.6,0.18,120,16);
+  const mat2=new THREE.MeshStandardMaterial({color:0xffffff, wireframe:true, transparent:true, opacity:0.08});
+  const mesh2=new THREE.Mesh(geo2, mat2);
+  mesh2.position.set(-2.6,-0.8,0);
+  group.add(mesh2);
+  const particlesGeo=new THREE.BufferGeometry();
+  const count=120;
+  const pos=new Float32Array(count*3);
+  for(let i=0;i<count*3;i++){ pos[i]=(Math.random()-0.5)*12; }
+  particlesGeo.setAttribute('position', new THREE.BufferAttribute(pos,3));
+  const particlesMat=new THREE.PointsMaterial({size:0.02, color:0xffffff, transparent:true, opacity:0.25});
+  const points=new THREE.Points(particlesGeo, particlesMat);
+  group.add(points);
+  let mx=0, my=0;
+  window.addEventListener('mousemove', e=>{ mx=(e.clientX/window.innerWidth-0.5)*0.6; my=(e.clientY/window.innerHeight-0.5)*0.6; });
+  function onResize(){ const w=canvas.clientWidth, h=canvas.clientHeight; camera.aspect=w/h; camera.updateProjectionMatrix(); renderer.setSize(w,h,false); }
+  window.addEventListener('resize', onResize);
+  let rafId;
+  const clock=new THREE.Clock();
+  function animate(){
+    rafId=requestAnimationFrame(animate);
+    const t=clock.getElapsedTime();
+    mesh1.rotation.y+=0.003; mesh1.rotation.x+=0.0015;
+    mesh2.rotation.y-=0.004; mesh2.rotation.x+=0.002;
+    group.rotation.y+= (mx - group.rotation.y)*0.03;
+    group.rotation.x+= (my - group.rotation.x)*0.03;
+    points.rotation.y=t*0.04;
+    renderer.render(scene,camera);
+  }
+  animate();
+}
+</script>
+</body>
+</html>
